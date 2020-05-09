@@ -1,4 +1,4 @@
-const CACHE_NAME = 'firstpwa-v1';
+const CACHE_NAME = 'firstpwa-2';
 var urlsToCache = [
 	'/',
 	'/nav.html',
@@ -8,7 +8,7 @@ var urlsToCache = [
 	'/pages/contact.html',
 	'/css/materialize.min.css',
 	'/js/materialize.min.js',
-	'/js/script.js'
+	'/js/nav.js'
 ];
 
 self.addEventListener('install', function(event){
@@ -35,3 +35,19 @@ self.addEventListener('activate', function(event){
 		})
 	);
 })
+
+self.addEventListener('fetch', function(event) {
+	event.respondWith(
+		caches.match(event.request, {cacheName:CACHE_NAME})
+		.then(function(response) {
+			if(response){
+				console.log("ServiceWorker: Gunakan aset dari cache: ", response.url);
+				return response;
+			}
+			
+			console.log("ServiceWorker: Memuat aset dari server: ", event.request.url);
+			return fetch(event.request);
+		})
+	);
+});
+
